@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Go/No-Go-Aufgabe</title>
+  <style>
+    #stimulus {
+      font-size: 24px;
+      text-align: center;
+      margin-top: 200px;
+    }
+  </style>
+</head>
+<body>
+  <div id="stimulus"></div>
+
+  <script>
+    // Erstelle ein Array mit den Stimuli und ihren Eigenschaften
+    var stimuli = [
+      { type: "go", duration: 1000 },    // Go-Stimulus
+      { type: "no-go", duration: 1000 }  // No-Go-Stimulus
+    ];
+
+    var currentTrial = 0; // Variable, um den aktuellen Durchlauf zu verfolgen
+    var responses = []; // Array zum Speichern der Reaktionen der Teilnehmer
+
+    // Funktion zum Präsentieren der Stimuli
+    function presentStimulus() {
+      if (currentTrial >= stimuli.length) {
+        // Ende der Aufgabe
+        document.getElementById("stimulus").textContent = "Aufgabe abgeschlossen!";
+        processResponses(); // Verarbeite die gesammelten Reaktionen
+        return;
+      }
+
+      var stimulus = stimuli[currentTrial];
+      document.getElementById("stimulus").textContent = stimulus.type;
+
+      var response = null;
+      var startTime = Date.now(); // Startzeit der Reaktion
+
+      // Event Listener zum Erfassen der Reaktion der Teilnehmer
+      document.addEventListener("keydown", function(event) {
+        if (response === null) {
+          response = {
+            stimulusType: stimulus.type,
+            keyPressed: event.key.toLowerCase(),
+            reactionTime: Date.now() - startTime
+          };
+        }
+      });
+
+      setTimeout(function() {
+        responses.push(response); // Speichere die Reaktion im Array
+        currentTrial++;
+        setTimeout(presentStimulus, 500); // Interstimulusintervall von 500 ms
+      }, stimulus.duration);
+    }
+
+    // Funktion zum Verarbeiten der gesammelten Reaktionen
+    function processResponses() {
+      // Hier können Sie die Reaktionen anpassen, speichern oder anzeigen
+      console.log(responses);
+    }
+
+    // Starte die Aufgabe, wenn die Seite geladen wird
+    window.onload = function() {
+      presentStimulus();
+    };
+  </script>
+</body>
+</html>
